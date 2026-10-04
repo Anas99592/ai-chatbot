@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyderabad AI Chatbot</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10243b;--text:#eef6ff;--muted:#9db0c6;--accent:#39b7ff;--accent2:#7c5cff;--border:#1e3853}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(circle at top right,#142c4a 0,#07111f 45%)}
+header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:23px}
+.title{font-weight:800;font-size:18px}.sub{font-size:12px;color:var(--muted);margin-top:3px}
+main{width:min(900px,100%);margin:auto;display:flex;flex-direction:column;flex:1;padding:20px}
+#messages{flex:1;overflow:auto;padding:8px 0 18px}
+.msg{display:flex;margin:12px 0}.msg.user{justify-content:flex-end}
+.bubble{max-width:78%;padding:13px 15px;border-radius:16px;line-height:1.45;white-space:pre-wrap}
+.bot .bubble{background:var(--panel);border:1px solid var(--border);border-bottom-left-radius:5px}
+.user .bubble{background:linear-gradient(135deg,#167bc2,#6549cf);border-bottom-right-radius:5px}
+.quick{display:flex;gap:8px;overflow:auto;padding:5px 0 12px}.quick button{white-space:nowrap}
+button{border:1px solid var(--border);background:var(--panel2);color:var(--text);border-radius:12px;padding:10px 13px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+.composer{display:flex;gap:9px;background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:9px}
+input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--text);font-size:16px;padding:9px}
+.send{background:linear-gradient(135deg,var(--accent),var(--accent2));border:0;font-weight:700;padding:10px 17px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
+@media(max-width:600px){main{padding:12px}.bubble{max-width:88%}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">🤖</div><div><div class="title">Hyderabad AI</div><div class="sub">Your smart Hyderabad travel assistant</div></div></header>
+<main>
+<div id="messages"></div>
+<div class="quick">
+<button onclick="quick('Best places to visit in Hyderabad')">📍 Places</button>
+<button onclick="quick('What food should I try?')">🍛 Food</button>
+<button onclick="quick('Plan a 2 day trip')">🗓️ Trip plan</button>
+<button onclick="quick('Tell me about Charminar')">🏛️ Charminar</button>
+</div>
+<div class="composer"><input id="input" placeholder="Ask me anything about Hyderabad..." autocomplete="off"><button class="send" onclick="send()">Send</button></div>
+</main>
+<footer>AI-style local assistant • No API key required for this demo</footer>
+</div>
+<script>
+const messages=document.getElementById('messages');
+const input=document.getElementById('input');
+
+function add(text,who='bot'){
+ const row=document.createElement('div'); row.className='msg '+who;
+ const b=document.createElement('div'); b.className='bubble'; b.textContent=text;
+ row.appendChild(b); messages.appendChild(row); messages.scrollTop=messages.scrollHeight;
+}
+function quick(t){input.value=t;send()}
+function reply(q){
+ const s=q.toLowerCase();
+ if(/hello|hi|hey|salam/.test(s)) return "Hello! 👋 I'm Hyderabad AI. Ask me about places, food, history, transport, shopping, or trip planning.";
+ if(/charminar/.test(s)) return "Charminar is Hyderabad's iconic 16th-century monument in the Old City. It's especially nice to explore the surrounding markets and try local food nearby.";
+ if(/food|eat|biryani|restaurant/.test(s)) return "For Hyderabad food, try Hyderabadi biryani, haleem (seasonal), mirchi ka salan, double ka meetha, and Irani chai. For a first visit, exploring the Old City is a great food experience.";
+ if(/place|visit|tour|see|attraction/.test(s)) return "Popular Hyderabad stops include Charminar, Golconda Fort, Salar Jung Museum, Chowmahalla Palace, Hussain Sagar, and Qutb Shahi Tombs.";
+ if(/2 day|two day/.test(s)) return "2-day plan:\\nDay 1: Charminar → Chowmahalla Palace → Laad Bazaar → evening food walk.\\nDay 2: Golconda Fort → Qutb Shahi Tombs → Salar Jung Museum → Hussain Sagar.";
+ if(/3 day|three day/.test(s)) return "3-day plan:\\nDay 1: Old City and Charminar.\\nDay 2: Golconda Fort and Qutb Shahi Tombs.\\nDay 3: Salar Jung Museum, Hussain Sagar and a relaxed food/shopping evening.";
+ if(/history|historic/.test(s)) return "Hyderabad has a rich Deccan history shaped by the Qutb Shahi, Mughal and Asaf Jahi periods. Charminar, Golconda Fort and the Qutb Shahi Tombs are great places to start.";
+ if(/transport|metro|bus|travel/.test(s)) return "Hyderabad has metro rail, buses, taxis and auto-rickshaws. For sightseeing, grouping nearby attractions together can save time.";
+ if(/shopping|market/.test(s)) return "For traditional shopping, Laad Bazaar near Charminar is famous for bangles and other items. Begum Bazaar and other city markets offer a wider range of goods.";
+ if(/weather|temperature/.test(s)) return "Hyderabad is generally warm for much of the year. Check a live weather service before your trip because conditions can change.";
+ if(/google|search/.test(s)) return "You can use Google for live information, maps, opening hours and current prices. This chatbot is a self-contained demo and does not have live web access.";
+ return "I can help with Hyderabad places, food, history, transport, shopping, or trip plans. Try: “Plan a 2 day trip” or “Best places to visit”.";
+}
+function send(){
+ const q=input.value.trim(); if(!q)return;
+ add(q,'user'); input.value='';
+ setTimeout(()=>add(reply(q),'bot'),250);
+}
+input.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+add("Namaste! 👋 I'm Hyderabad AI.\nI can help you explore Hyderabad. What would you like to know?");
+</script>
+</body>
+</html>
